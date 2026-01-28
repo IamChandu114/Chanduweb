@@ -3,23 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>My App</title>
-    <meta name="description" content="My App Description" />
-    <meta name="author" content="my application" />
 
-    <!-- TODO: Update og:title to match your application name -->
-    <meta property="og:title" content="My App" />
-    <meta property="og:description" content="My App Description" />
+    <!-- App Title -->
+    <title>Portfolio</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Chandu — Systems Engineer, AI/ML & Full Stack Developer building intelligent, real-world systems." />
+    <meta name="author" content="Chandu" />
+
+    <!-- Favicon (THIS FIXES THE LOVABLE ICON ISSUE) -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <!-- Open Graph (LinkedIn / WhatsApp / Twitter preview) -->
+    <meta property="og:title" content="Chandu | Systems Engineer" />
+    <meta property="og:description" content="I design intelligent systems that survive the real world." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="/opengraph.png" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="my application" />
-    <meta name="twitter:image" content="https://.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:title" content="Chandu | Systems Engineer" />
+    <meta name="twitter:description" content="I design intelligent systems that survive the real world." />
+    <meta name="twitter:image" content="/opengraph.png" />
   </head>
 
-  <body> 
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
