@@ -67,7 +67,7 @@ export const ContactSection = () => {
               </a>
             </Button>
             <Button variant="outline" size="lg" className="gap-2" asChild>
-              <a href="www.linkedin.com/in/pace1304" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.linkedin.com/in/pace1304/" target="_blank" rel="noopener noreferrer">
                 <Linkedin size={20} />
                 LinkedIn
                 <ArrowUpRight size={16} />
