@@ -7,6 +7,7 @@
  * Environment Variables Required:
  * - VITE_GA4_ID: Google Analytics 4 Measurement ID (optional, production only)
  * - VITE_CLARITY_ID: Microsoft Clarity Project ID (optional, production only)
+ * - VITE_ENABLE_ANALYTICS: Set to "true" to enable analytics in production
  */
 
 // Declare gtag function for Google Analytics (injected dynamically)
@@ -34,13 +35,13 @@ type EventName =
   | 'phone_click';
 
 interface AnalyticsConfig {
-  isProduction: boolean;
+  analyticsEnabled: boolean;
   ga4Id?: string;
   clarityId?: string;
 }
 
 class AnalyticsService {
-  private isProduction: boolean;
+  private analyticsEnabled: boolean;
   private ga4Id?: string;
   private clarityId?: string;
   private trackedEvents = new Set<string>();
@@ -48,7 +49,7 @@ class AnalyticsService {
   private initPromise: Promise<void> | null = null;
 
   constructor(config: AnalyticsConfig) {
-    this.isProduction = config.isProduction;
+    this.analyticsEnabled = config.analyticsEnabled;
     this.ga4Id = config.ga4Id;
     this.clarityId = config.clarityId;
   }
@@ -56,16 +57,17 @@ class AnalyticsService {
   /**
    * Initialize all analytics providers
    * Should be called once at application startup
-   * Returns a promise that resolves when all scripts are loaded
+   * Returns a promise that resolves when all scripts are loaded or skipped
+   * Never throws - analytics failures don't block app
    */
   async init(): Promise<void> {
     if (this.initialized) {
       return this.initPromise || Promise.resolve();
     }
 
-    if (!this.isProduction) {
+    if (!this.analyticsEnabled) {
       if (import.meta.env.DEV) {
-        console.log('[Analytics] Disabled in development mode');
+        console.log('[Analytics] Disabled (not in production or VITE_ENABLE_ANALYTICS not set)');
       }
       this.initialized = true;
       return Promise.resolve();
@@ -77,10 +79,21 @@ class AnalyticsService {
 
     // Create the initialization promise
     this.initPromise = Promise.all([
-      this.ga4Id ? this.injectGoogleAnalytics() : Promise.resolve(),
-      this.clarityId ? this.injectMicrosoftClarity() : Promise.resolve(),
+      this.ga4Id ? this.injectGoogleAnalytics().catch(err => {
+        console.error('[Analytics] GA4 initialization failed:', err);
+      }) : Promise.resolve(),
+      this.clarityId ? this.injectMicrosoftClarity().catch(err => {
+        console.error('[Analytics] Clarity initialization failed:', err);
+      }) : Promise.resolve(),
     ]).then(() => {
-      this.trackPageView();
+      try {
+        this.trackPageView();
+      } catch (error) {
+        console.error('[Analytics] Failed to track initial page view:', error);
+      }
+    }).catch(err => {
+      console.error('[Analytics] Initialization error:', err);
+      // Never throw - analytics is not critical to app
     });
 
     this.initialized = true;
@@ -92,7 +105,7 @@ class AnalyticsService {
    * Uses the official gtag.js from Google's CDN
    */
   private injectGoogleAnalytics(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (!this.ga4Id) {
         if (import.meta.env.DEV) {
           console.warn('[Analytics] GA4 ID not configured, skipping GA4 initialization');
@@ -138,13 +151,13 @@ class AnalyticsService {
 
         script.onerror = () => {
           console.error('[Analytics] Failed to load Google Analytics script');
-          reject(new Error('Failed to load Google Analytics script'));
+          resolve(); // Don't throw - analytics is optional
         };
 
         document.head.appendChild(script);
       } catch (error) {
         console.error('[Analytics] Error injecting Google Analytics:', error);
-        reject(error);
+        resolve(); // Don't throw - analytics is optional
       }
     });
   }
@@ -174,7 +187,7 @@ class AnalyticsService {
    * Dynamically inject Microsoft Clarity script
    */
   private injectMicrosoftClarity(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (!this.clarityId) {
         if (import.meta.env.DEV) {
           console.warn('[Analytics] Clarity ID not configured, skipping Clarity initialization');
@@ -193,7 +206,7 @@ class AnalyticsService {
       }
 
       try {
-        // Create the clarity function
+        // Create the clarity function placeholder
         window.clarity = function () {
           // Placeholder until actual script loads
         };
@@ -212,15 +225,13 @@ class AnalyticsService {
 
         script.onerror = () => {
           console.error('[Analytics] Failed to load Microsoft Clarity script');
-          // Don't reject - Clarity is optional
-          resolve();
+          resolve(); // Don't throw - Clarity is optional
         };
 
         document.head.appendChild(script);
       } catch (error) {
         console.error('[Analytics] Error injecting Microsoft Clarity:', error);
-        // Don't reject - Clarity is optional
-        resolve();
+        resolve(); // Don't throw - Clarity is optional
       }
     });
   }
@@ -230,7 +241,7 @@ class AnalyticsService {
    * Prevents duplicate events within 500ms of the same type
    */
   trackEvent(eventName: EventName, eventData?: Record<string, any>): void {
-    if (!this.isProduction) return;
+    if (!this.analyticsEnabled) return;
 
     const eventId = `${eventName}-${JSON.stringify(eventData || {})}`;
     
@@ -278,7 +289,7 @@ class AnalyticsService {
    * Track page view (called automatically on init, can be called manually)
    */
   trackPageView(path?: string, title?: string): void {
-    if (!this.isProduction) return;
+    if (!this.analyticsEnabled) return;
 
     const pagePath = path || window.location.pathname;
     const pageTitle = title || document.title;
@@ -347,20 +358,23 @@ class AnalyticsService {
   }
 
   /**
-   * Check if analytics is enabled in production
+   * Check if analytics is enabled
    */
   isEnabled(): boolean {
-    return this.isProduction;
+    return this.analyticsEnabled;
   }
 }
 
 // Create singleton instance
-const isProduction = import.meta.env.PROD === true;
-const ga4Id = isProduction ? import.meta.env.VITE_GA4_ID : undefined;
-const clarityId = isProduction ? import.meta.env.VITE_CLARITY_ID : undefined;
+const analyticsEnabled =
+  import.meta.env.PROD &&
+  import.meta.env.VITE_ENABLE_ANALYTICS === 'true';
+
+const ga4Id = analyticsEnabled ? import.meta.env.VITE_GA4_ID : undefined;
+const clarityId = analyticsEnabled ? import.meta.env.VITE_CLARITY_ID : undefined;
 
 const analytics = new AnalyticsService({
-  isProduction,
+  analyticsEnabled,
   ga4Id,
   clarityId,
 });
