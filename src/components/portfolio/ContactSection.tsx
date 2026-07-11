@@ -2,10 +2,23 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Mail, Github, Linkedin, ArrowUpRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import analytics from "@/lib/analytics";
 
 export const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const handleGitHubClick = () => {
+    analytics.trackLinkClick("GitHub Profile", "https://github.com/IamChandu114/", "social");
+  };
+
+  const handleLinkedInClick = () => {
+    analytics.trackLinkClick("LinkedIn Profile", "https://www.linkedin.com/in/pace1304/", "social");
+  };
+
+  const handleEmailClick = () => {
+    analytics.trackLinkClick("Email Contact", "mailto:ca4443700@gmail.com", "contact");
+  };
 
   return (
     <section id="contact" className="py-32 bg-secondary/30" ref={ref}>
@@ -21,7 +34,7 @@ export const ContactSection = () => {
               Let's Build Something Great
             </h2>
             <p className="section-subtitle mx-auto mb-8">
-              I'm always interested in hearing about new opportunities, challenging problems, 
+              I'm always interested in hearing about new opportunities, challenging problems,
               or just connecting with fellow builders. The best conversations start with a simple hello.
             </p>
           </motion.div>
@@ -43,7 +56,8 @@ export const ContactSection = () => {
             className="glass-card p-8 sm:p-10 mb-10"
           >
             <a
-              href="mailto:hello@example.com"
+              href="mailto:ca4443700@gmail.com"
+              onClick={handleEmailClick}
               className="text-2xl sm:text-3xl font-bold text-foreground hover:text-accent transition-colors"
             >
               ca4443700@gmail.com
@@ -60,21 +74,31 @@ export const ContactSection = () => {
             className="flex flex-wrap items-center justify-center gap-4"
           >
             <Button variant="outline" size="lg" className="gap-2" asChild>
-              <a href="https://github.com/IamChandu114/" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/IamChandu114/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleGitHubClick}
+              >
                 <Github size={20} />
                 GitHub
                 <ArrowUpRight size={16} />
               </a>
             </Button>
             <Button variant="outline" size="lg" className="gap-2" asChild>
-              <a href="https://www.linkedin.com/in/pace1304/" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://www.linkedin.com/in/pace1304/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleLinkedInClick}
+              >
                 <Linkedin size={20} />
                 LinkedIn
                 <ArrowUpRight size={16} />
               </a>
             </Button>
             <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2" asChild>
-              <a href="mailto:ca4443700@gmail.com">
+              <a href="mailto:ca4443700@gmail.com" onClick={handleEmailClick}>
                 <Mail size={20} />
                 Send Email
               </a>

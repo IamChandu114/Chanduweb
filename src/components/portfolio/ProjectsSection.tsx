@@ -10,6 +10,7 @@ import {
   Database
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import analytics from "@/lib/analytics";
 
 const projects = [
   {
@@ -38,7 +39,8 @@ const projects = [
       "Designing a reproducible pipeline that handled both batch and real-time data while ensuring experiment traceability.",
     icon: Database,
     color: "from-emerald-500 to-teal-500",
-    caseStudyUrl: "https://end-end-datascience-1-1.onrender.com"
+    caseStudyUrl: "https://end-end-datascience-1-1.onrender.com",
+    id: "data_scientist_platform"
   },
 
   {
@@ -66,7 +68,8 @@ const projects = [
       "Maintaining ultra-low latency under burst traffic required custom model caching, intelligent batching, and a priority-aware execution layer.",
     icon: Zap,
     color: "from-blue-500 to-cyan-500",
-    caseStudyUrl: "https://ai-decision-engine-wnuq.vercel.app/ui/"
+    caseStudyUrl: "https://ai-decision-engine-wnuq.vercel.app/ui/",
+    id: "ai_decision_engine"
   },
 
   {
@@ -93,7 +96,8 @@ const projects = [
       "Designing meaningful representations without linguistic anchors required novel embedding alignment and contrastive objectives.",
     icon: Languages,
     color: "from-purple-500 to-pink-500",
-    caseStudyUrl: "https://no-language-ai-01.streamlit.app/"
+    caseStudyUrl: "https://no-language-ai-01.streamlit.app/",
+    id: "no_language_ai"
   },
 
   {
@@ -120,7 +124,8 @@ const projects = [
       "Preventing catastrophic forgetting while allowing safe self-improvement required strict evaluation gates and rollback mechanisms.",
     icon: Brain,
     color: "from-orange-500 to-red-500",
-    caseStudyUrl: "https://fttqefscunaoqy59q96vc5.streamlit.app/"
+    caseStudyUrl: "https://fttqefscunaoqy59q96vc5.streamlit.app/",
+    id: "self_evolving_system"
   },
 
   {
@@ -148,7 +153,8 @@ const projects = [
       "Balancing performance, security, and scalability while keeping the UX fast and intuitive across devices.",
     icon: ShoppingCart,
     color: "from-yellow-500 to-orange-500",
-    caseStudyUrl: "https://spectacular-platypus-7e2660.netlify.app/"
+    caseStudyUrl: "https://spectacular-platypus-7e2660.netlify.app/",
+    id: "ecommerce_platform"
   },
 
   {
@@ -175,13 +181,18 @@ const projects = [
       "Designing fair scoring mechanisms while handling diverse resume formats and unstructured data.",
     icon: FileSearch,
     color: "from-indigo-500 to-violet-500",
-    caseStudyUrl: "https://aic-resume-analyzer.onrender.com/"
+    caseStudyUrl: "https://aic-resume-analyzer.onrender.com/",
+    id: "resume_analyzer"
   }
-]; 
+];
 
 export const ProjectsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const handleProjectClick = (projectId: string, url: string) => {
+    analytics.trackLinkClick(`project_${projectId}`, url, "project");
+  };
 
   return (
     <section id="projects" className="py-32 bg-secondary/30" ref={ref}>
@@ -265,6 +276,9 @@ export const ProjectsSection = () => {
                     <Button variant="ghost" className="w-full mt-4 group/btn" asChild>
                       <a
                         href={project.caseStudyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => handleProjectClick(project.id, project.caseStudyUrl)}
                         className="flex items-center justify-center gap-2"
                       >
                         View System
