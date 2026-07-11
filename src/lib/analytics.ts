@@ -1,1 +1,277 @@
-/**\n * Analytics Utility\n * \n * Unified analytics tracking for Vercel Analytics, Google Analytics 4, and Microsoft Clarity.\n * All analytics only run in production mode.\n */\n\n// Declare gtag function for Google Analytics (injected via script tag)\ndeclare global {\n  interface Window {\n    gtag?: (...args: any[]) => void;\n    clarity?: (...args: any[]) => void;\n  }\n}\n\ntype EventName = \n  | 'resume_download'\n  | 'github_click'\n  | 'linkedin_click'\n  | 'contact_click'\n  | 'project_view'\n  | 'nav_click'\n  | 'email_click';\n\ninterface AnalyticsConfig {\n  isProduction: boolean;\n  ga4Id?: string;\n  clarityId?: string;\n}\n\nclass AnalyticsService {\n  private isProduction: boolean;\n  private ga4Id?: string;\n  private clarityId?: string;\n  private trackedEvents = new Set<string>();\n\n  constructor(config: AnalyticsConfig) {\n    this.isProduction = config.isProduction;\n    this.ga4Id = config.ga4Id;\n    this.clarityId = config.clarityId;\n  }\n\n  /**\n   * Initialize all analytics providers\n   */\n  init(): void {\n    if (!this.isProduction) {\n      console.log('[Analytics] Disabled in development mode');\n      return;\n    }\n\n    console.log('[Analytics] Initializing analytics providers');\n    this.initGoogleAnalytics();\n    this.initMicrosoftClarity();\n  }\n\n  /**\n   * Initialize Google Analytics 4\n   * The gtag script is injected via index.html\n   */\n  private initGoogleAnalytics(): void {\n    if (!this.ga4Id) {\n      console.warn('[Analytics] GA4 ID not configured');\n      return;\n    }\n\n    if (!window.gtag) {\n      console.warn('[Analytics] Google Analytics script not loaded');\n      return;\n    }\n\n    try {\n      // Configure GA4\n      window.gtag('config', this.ga4Id, {\n        page_path: window.location.pathname,\n        page_title: document.title,\n        send_page_view: true,\n      });\n      console.log('[Analytics] Google Analytics 4 initialized');\n    } catch (error) {\n      console.error('[Analytics] Failed to initialize Google Analytics:', error);\n    }\n  }\n\n  /**\n   * Initialize Microsoft Clarity\n   * The clarity script is injected via index.html\n   */\n  private initMicrosoftClarity(): void {\n    if (!this.clarityId) {\n      console.warn('[Analytics] Clarity ID not configured');\n      return;\n    }\n\n    if (!window.clarity) {\n      console.warn('[Analytics] Microsoft Clarity script not loaded');\n      return;\n    }\n\n    try {\n      window.clarity('identify', this.clarityId);\n      console.log('[Analytics] Microsoft Clarity initialized');\n    } catch (error) {\n      console.error('[Analytics] Failed to initialize Microsoft Clarity:', error);\n    }\n  }\n\n  /**\n   * Track a click event with deduplication\n   * Prevents duplicate events within 500ms of the same type\n   */\n  trackEvent(eventName: EventName, eventData?: Record<string, any>): void {\n    if (!this.isProduction) return;\n\n    const eventId = `${eventName}-${JSON.stringify(eventData || {})}`;\n    \n    // Prevent duplicate events within 500ms\n    if (this.trackedEvents.has(eventId)) {\n      console.log(`[Analytics] Skipping duplicate event: ${eventName}`);\n      return;\n    }\n\n    this.trackedEvents.add(eventId);\n    setTimeout(() => this.trackedEvents.delete(eventId), 500);\n\n    // Track with Google Analytics\n    if (window.gtag) {\n      try {\n        window.gtag('event', eventName, eventData || {});\n      } catch (error) {\n        console.error('[Analytics] GA4 tracking failed:', error);\n      }\n    }\n\n    // Track with Microsoft Clarity\n    if (window.clarity) {\n      try {\n        window.clarity('event', eventName, eventData || {});\n      } catch (error) {\n        console.error('[Analytics] Clarity tracking failed:', error);\n      }\n    }\n\n    console.log(`[Analytics] Event tracked: ${eventName}`, eventData);\n  }\n\n  /**\n   * Track page view (called automatically by GA4, manual call for clarity)\n   */\n  trackPageView(path?: string, title?: string): void {\n    if (!this.isProduction) return;\n\n    const pagePath = path || window.location.pathname;\n    const pageTitle = title || document.title;\n\n    // Google Analytics tracks page views automatically\n    // This is for manual tracking if needed\n    if (window.gtag) {\n      try {\n        window.gtag('event', 'page_view', {\n          page_path: pagePath,\n          page_title: pageTitle,\n        });\n      } catch (error) {\n        console.error('[Analytics] GA4 page view tracking failed:', error);\n      }\n    }\n\n    console.log(`[Analytics] Page view tracked: ${pagePath}`);\n  }\n\n  /**\n   * Track link clicks with destination and label\n   */\n  trackLinkClick(\n    label: string,\n    destination: string,\n    category: string = 'external_link'\n  ): void {\n    this.trackEvent('link_click', {\n      label,\n      destination,\n      category,\n      timestamp: new Date().toISOString(),\n    });\n  }\n\n  /**\n   * Track button clicks\n   */\n  trackButtonClick(buttonName: string, label?: string): void {\n    this.trackEvent('button_click', {\n      button_name: buttonName,\n      label: label || '',\n      timestamp: new Date().toISOString(),\n    });\n  }\n\n  /**\n   * Track file downloads\n   */\n  trackDownload(fileName: string, fileType: string = 'pdf'): void {\n    this.trackEvent('file_download', {\n      file_name: fileName,\n      file_type: fileType,\n      timestamp: new Date().toISOString(),\n    });\n  }\n\n  /**\n   * Track engagement metrics\n   */\n  trackEngagement(action: string, value?: number): void {\n    this.trackEvent('engagement', {\n      action,\n      value: value || 1,\n      timestamp: new Date().toISOString(),\n    });\n  }\n}\n\n// Create singleton instance\nconst isProduction = import.meta.env.MODE === 'production';\nconst analytics = new AnalyticsService({\n  isProduction,\n  ga4Id: isProduction ? import.meta.env.VITE_GA4_ID : undefined,\n  clarityId: isProduction ? import.meta.env.VITE_CLARITY_ID : undefined,\n});\n\nexport default analytics;\n"
+/**
+ * Analytics Utility
+ * 
+ * Unified analytics tracking for Vercel Analytics, Google Analytics 4, and Microsoft Clarity.
+ * All analytics only run in production mode.
+ * 
+ * Environment Variables Required:
+ * - VITE_GA4_ID: Google Analytics 4 Measurement ID (optional)
+ * - VITE_CLARITY_ID: Microsoft Clarity Project ID (optional)
+ */
+
+// Declare gtag function for Google Analytics (injected via script tag)
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    clarity?: (...args: any[]) => void;
+  }
+}
+
+type EventName = 
+  | 'resume_download'
+  | 'github_click'
+  | 'linkedin_click'
+  | 'contact_click'
+  | 'project_view'
+  | 'nav_click'
+  | 'email_click'
+  | 'link_click'
+  | 'button_click'
+  | 'file_download'
+  | 'engagement'
+  | 'page_view'
+  | 'phone_click';
+
+interface AnalyticsConfig {
+  isProduction: boolean;
+  ga4Id?: string;
+  clarityId?: string;
+}
+
+class AnalyticsService {
+  private isProduction: boolean;
+  private ga4Id?: string;
+  private clarityId?: string;
+  private trackedEvents = new Set<string>();
+  private initialized = false;
+
+  constructor(config: AnalyticsConfig) {
+    this.isProduction = config.isProduction;
+    this.ga4Id = config.ga4Id;
+    this.clarityId = config.clarityId;
+  }
+
+  /**
+   * Initialize all analytics providers
+   * Should be called once at application startup
+   */
+  init(): void {
+    if (this.initialized) return;
+    this.initialized = true;
+
+    if (!this.isProduction) {
+      if (import.meta.env.DEV) {
+        console.log('[Analytics] Disabled in development mode');
+      }
+      return;
+    }
+
+    if (import.meta.env.DEV) {
+      console.log('[Analytics] Initializing analytics providers in production mode');
+    }
+
+    this.initGoogleAnalytics();
+    this.initMicrosoftClarity();
+    this.trackPageView();
+  }
+
+  /**
+   * Initialize Google Analytics 4
+   * The gtag script must be injected via index.html before this runs
+   */
+  private initGoogleAnalytics(): void {
+    if (!this.ga4Id) {
+      if (import.meta.env.DEV) {
+        console.warn('[Analytics] GA4 ID not configured, skipping GA4 initialization');
+      }
+      return;
+    }
+
+    if (!window.gtag) {
+      console.warn('[Analytics] Google Analytics script not loaded');
+      return;
+    }
+
+    try {
+      window.gtag('config', this.ga4Id, {
+        page_path: window.location.pathname,
+        page_title: document.title,
+        send_page_view: false, // We handle page views manually
+      });
+      if (import.meta.env.DEV) {
+        console.log('[Analytics] Google Analytics 4 initialized with ID:', this.ga4Id);
+      }
+    } catch (error) {
+      console.error('[Analytics] Failed to initialize Google Analytics:', error);
+    }
+  }
+
+  /**
+   * Initialize Microsoft Clarity
+   * The clarity script must be injected via index.html before this runs
+   */
+  private initMicrosoftClarity(): void {
+    if (!this.clarityId) {
+      if (import.meta.env.DEV) {
+        console.warn('[Analytics] Clarity ID not configured, skipping Clarity initialization');
+      }
+      return;
+    }
+
+    if (!window.clarity) {
+      console.warn('[Analytics] Microsoft Clarity script not loaded');
+      return;
+    }
+
+    try {
+      window.clarity('identify', this.clarityId);
+      if (import.meta.env.DEV) {
+        console.log('[Analytics] Microsoft Clarity initialized with ID:', this.clarityId);
+      }
+    } catch (error) {
+      console.error('[Analytics] Failed to initialize Microsoft Clarity:', error);
+    }
+  }
+
+  /**
+   * Track a custom event with deduplication
+   * Prevents duplicate events within 500ms of the same type
+   */
+  trackEvent(eventName: EventName, eventData?: Record<string, any>): void {
+    if (!this.isProduction) return;
+
+    const eventId = `${eventName}-${JSON.stringify(eventData || {})}`;
+    
+    // Prevent duplicate events within 500ms
+    if (this.trackedEvents.has(eventId)) {
+      if (import.meta.env.DEV) {
+        console.log(`[Analytics] Skipping duplicate event: ${eventName}`);
+      }
+      return;
+    }
+
+    this.trackedEvents.add(eventId);
+    setTimeout(() => this.trackedEvents.delete(eventId), 500);
+
+    // Prepare event data with timestamp
+    const enrichedData = {
+      ...eventData,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Track with Google Analytics
+    if (window.gtag) {
+      try {
+        window.gtag('event', eventName, enrichedData);
+      } catch (error) {
+        console.error('[Analytics] GA4 tracking failed:', error);
+      }
+    }
+
+    // Track with Microsoft Clarity
+    if (window.clarity) {
+      try {
+        window.clarity('event', eventName, enrichedData);
+      } catch (error) {
+        console.error('[Analytics] Clarity tracking failed:', error);
+      }
+    }
+
+    if (import.meta.env.DEV) {
+      console.log(`[Analytics] Event tracked: ${eventName}`, enrichedData);
+    }
+  }
+
+  /**
+   * Track page view (called automatically on init, can be called manually)
+   */
+  trackPageView(path?: string, title?: string): void {
+    if (!this.isProduction) return;
+
+    const pagePath = path || window.location.pathname;
+    const pageTitle = title || document.title;
+
+    // Google Analytics tracks page views automatically with send_page_view: true
+    // But we send manual page_view events for consistency
+    if (window.gtag) {
+      try {
+        window.gtag('event', 'page_view', {
+          page_path: pagePath,
+          page_title: pageTitle,
+          page_location: window.location.href,
+        });
+      } catch (error) {
+        console.error('[Analytics] GA4 page view tracking failed:', error);
+      }
+    }
+
+    if (import.meta.env.DEV) {
+      console.log(`[Analytics] Page view tracked: ${pagePath}`);
+    }
+  }
+
+  /**
+   * Track link clicks with destination and label
+   */
+  trackLinkClick(
+    label: string,
+    destination: string,
+    category: string = 'external_link'
+  ): void {
+    this.trackEvent('link_click', {
+      link_label: label,
+      link_url: destination,
+      link_category: category,
+    });
+  }
+
+  /**
+   * Track button clicks
+   */
+  trackButtonClick(buttonName: string, label?: string): void {
+    this.trackEvent('button_click', {
+      button_name: buttonName,
+      button_label: label || '',
+    });
+  }
+
+  /**
+   * Track file downloads
+   */
+  trackDownload(fileName: string, fileType: string = 'pdf'): void {
+    this.trackEvent('file_download', {
+      file_name: fileName,
+      file_type: fileType,
+    });
+  }
+
+  /**
+   * Track engagement metrics
+   */
+  trackEngagement(action: string, value?: number): void {
+    this.trackEvent('engagement', {
+      engagement_action: action,
+      engagement_value: value || 1,
+    });
+  }
+
+  /**
+   * Check if analytics is enabled in production
+   */
+  isEnabled(): boolean {
+    return this.isProduction;
+  }
+}
+
+// Create singleton instance
+const isProduction = import.meta.env.PROD === true;
+const ga4Id = isProduction ? import.meta.env.VITE_GA4_ID : undefined;
+const clarityId = isProduction ? import.meta.env.VITE_CLARITY_ID : undefined;
+
+const analytics = new AnalyticsService({
+  isProduction,
+  ga4Id,
+  clarityId,
+});
+
+export default analytics;
