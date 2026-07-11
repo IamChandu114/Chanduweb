@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import analytics from "@/lib/analytics";
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -24,6 +25,18 @@ export const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleResumeClick = () => {
+    analytics.trackDownload("Chandu_Resume_1.pdf", "pdf");
+  };
+
+  const handleContactClick = () => {
+    analytics.trackButtonClick("get_in_touch", "navigation");
+  };
+
+  const handleNavClick = (label: string) => {
+    analytics.trackButtonClick(`nav_${label.toLowerCase()}`, "navigation");
+  };
+
   return (
     <>
       <motion.header
@@ -45,30 +58,42 @@ export const Navigation = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               {navItems.map((item) => (
-                <a key={item.href} href={item.href} className="nav-link">
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => handleNavClick(item.label)}
+                  className="nav-link"
+                >
                   {item.label}
                 </a>
               ))}
             </div>
 
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" size="sm" asChild>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdzUfxJ13M-bnXPh6NUWPa9F8d7xn47FcUmZjzuO2d9O2-gqQ/viewform?usp=header">Get in Touch</a>
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                onClick={handleContactClick}
+              >
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdzUfxJ13M-bnXPh6NUWPa9F8d7xn47FcUmZjzuO2d9O2-gqQ/viewform?usp=header">
+                  Get in Touch
+                </a>
               </Button>
-             <Button
-  size="sm"
-  className="bg-accent hover:bg-accent/90 text-accent-foreground"
-  asChild
->
-  <a
-    href="/pdfs/Chandu_Resume_1.pdf"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Resume
-  </a>
-</Button>
-
+              <Button
+                size="sm"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                asChild
+                onClick={handleResumeClick}
+              >
+                <a
+                  href="/pdfs/Chandu_Resume_1.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Resume
+                </a>
+              </Button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -99,18 +124,35 @@ export const Navigation = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    handleNavClick(item.label);
+                    setMobileMenuOpen(false);
+                  }}
                   className="text-2xl font-medium text-foreground hover:text-accent transition-colors"
                 >
                   {item.label}
                 </motion.a>
               ))}
               <div className="flex flex-col gap-3 mt-6">
-                <Button variant="outline" size="lg" asChild>
-                  <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Get in Touch</a>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  asChild
+                  onClick={handleContactClick}
+                >
+                  <a href="#contact" onClick={() => setMobileMenuOpen(false)}>
+                    Get in Touch
+                  </a>
                 </Button>
-                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-                  <a href="/resume.pdf" target="_blank">Download Resume</a>
+                <Button
+                  size="lg"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                  asChild
+                  onClick={handleResumeClick}
+                >
+                  <a href="/resume.pdf" target="_blank">
+                    Download Resume
+                  </a>
                 </Button>
               </div>
             </div>
