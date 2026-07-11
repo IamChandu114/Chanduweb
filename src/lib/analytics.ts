@@ -2,18 +2,19 @@
  * Analytics Utility
  * 
  * Unified analytics tracking for Vercel Analytics, Google Analytics 4, and Microsoft Clarity.
- * All analytics only run in production mode.
+ * Dynamically injects analytics scripts and initializes them only in production.
  * 
  * Environment Variables Required:
- * - VITE_GA4_ID: Google Analytics 4 Measurement ID (optional)
- * - VITE_CLARITY_ID: Microsoft Clarity Project ID (optional)
+ * - VITE_GA4_ID: Google Analytics 4 Measurement ID (optional, production only)
+ * - VITE_CLARITY_ID: Microsoft Clarity Project ID (optional, production only)
  */
 
-// Declare gtag function for Google Analytics (injected via script tag)
+// Declare gtag function for Google Analytics (injected dynamically)
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
     clarity?: (...args: any[]) => void;
+    dataLayer?: any[];
   }
 }
 
@@ -44,6 +45,7 @@ class AnalyticsService {
   private clarityId?: string;
   private trackedEvents = new Set<string>();
   private initialized = false;
+  private initPromise: Promise<void> | null = null;
 
   constructor(config: AnalyticsConfig) {
     this.isProduction = config.isProduction;
@@ -54,83 +56,173 @@ class AnalyticsService {
   /**
    * Initialize all analytics providers
    * Should be called once at application startup
+   * Returns a promise that resolves when all scripts are loaded
    */
-  init(): void {
-    if (this.initialized) return;
-    this.initialized = true;
+  async init(): Promise<void> {
+    if (this.initialized) {
+      return this.initPromise || Promise.resolve();
+    }
 
     if (!this.isProduction) {
       if (import.meta.env.DEV) {
         console.log('[Analytics] Disabled in development mode');
       }
-      return;
+      this.initialized = true;
+      return Promise.resolve();
     }
 
     if (import.meta.env.DEV) {
       console.log('[Analytics] Initializing analytics providers in production mode');
     }
 
-    this.initGoogleAnalytics();
-    this.initMicrosoftClarity();
-    this.trackPageView();
+    // Create the initialization promise
+    this.initPromise = Promise.all([
+      this.ga4Id ? this.injectGoogleAnalytics() : Promise.resolve(),
+      this.clarityId ? this.injectMicrosoftClarity() : Promise.resolve(),
+    ]).then(() => {
+      this.trackPageView();
+    });
+
+    this.initialized = true;
+    await this.initPromise;
   }
 
   /**
-   * Initialize Google Analytics 4
-   * The gtag script must be injected via index.html before this runs
+   * Dynamically inject Google Analytics 4 script
+   * Uses the official gtag.js from Google's CDN
    */
-  private initGoogleAnalytics(): void {
-    if (!this.ga4Id) {
-      if (import.meta.env.DEV) {
-        console.warn('[Analytics] GA4 ID not configured, skipping GA4 initialization');
+  private injectGoogleAnalytics(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.ga4Id) {
+        if (import.meta.env.DEV) {
+          console.warn('[Analytics] GA4 ID not configured, skipping GA4 initialization');
+        }
+        resolve();
+        return;
       }
-      return;
-    }
 
-    if (!window.gtag) {
-      console.warn('[Analytics] Google Analytics script not loaded');
-      return;
-    }
+      // Check if gtag already loaded
+      if (window.gtag) {
+        if (import.meta.env.DEV) {
+          console.log('[Analytics] Google Analytics already loaded');
+        }
+        this.configureGoogleAnalytics();
+        resolve();
+        return;
+      }
+
+      try {
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+
+        // Create gtag function
+        window.gtag = function () {
+          (window.dataLayer as any).push(arguments);
+        };
+
+        // Set initial command
+        window.gtag('js', new Date());
+
+        // Load the gtag script from Google's CDN
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${this.ga4Id}`;
+
+        script.onload = () => {
+          if (import.meta.env.DEV) {
+            console.log('[Analytics] Google Analytics script loaded');
+          }
+          this.configureGoogleAnalytics();
+          resolve();
+        };
+
+        script.onerror = () => {
+          console.error('[Analytics] Failed to load Google Analytics script');
+          reject(new Error('Failed to load Google Analytics script'));
+        };
+
+        document.head.appendChild(script);
+      } catch (error) {
+        console.error('[Analytics] Error injecting Google Analytics:', error);
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Configure Google Analytics after script is loaded
+   */
+  private configureGoogleAnalytics(): void {
+    if (!window.gtag || !this.ga4Id) return;
 
     try {
       window.gtag('config', this.ga4Id, {
         page_path: window.location.pathname,
         page_title: document.title,
+        page_location: window.location.href,
         send_page_view: false, // We handle page views manually
       });
       if (import.meta.env.DEV) {
-        console.log('[Analytics] Google Analytics 4 initialized with ID:', this.ga4Id);
+        console.log('[Analytics] Google Analytics 4 configured with ID:', this.ga4Id);
       }
     } catch (error) {
-      console.error('[Analytics] Failed to initialize Google Analytics:', error);
+      console.error('[Analytics] Failed to configure Google Analytics:', error);
     }
   }
 
   /**
-   * Initialize Microsoft Clarity
-   * The clarity script must be injected via index.html before this runs
+   * Dynamically inject Microsoft Clarity script
    */
-  private initMicrosoftClarity(): void {
-    if (!this.clarityId) {
-      if (import.meta.env.DEV) {
-        console.warn('[Analytics] Clarity ID not configured, skipping Clarity initialization');
+  private injectMicrosoftClarity(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.clarityId) {
+        if (import.meta.env.DEV) {
+          console.warn('[Analytics] Clarity ID not configured, skipping Clarity initialization');
+        }
+        resolve();
+        return;
       }
-      return;
-    }
 
-    if (!window.clarity) {
-      console.warn('[Analytics] Microsoft Clarity script not loaded');
-      return;
-    }
-
-    try {
-      window.clarity('identify', this.clarityId);
-      if (import.meta.env.DEV) {
-        console.log('[Analytics] Microsoft Clarity initialized with ID:', this.clarityId);
+      // Check if clarity already loaded
+      if (window.clarity) {
+        if (import.meta.env.DEV) {
+          console.log('[Analytics] Microsoft Clarity already loaded');
+        }
+        resolve();
+        return;
       }
-    } catch (error) {
-      console.error('[Analytics] Failed to initialize Microsoft Clarity:', error);
-    }
+
+      try {
+        // Create the clarity function
+        window.clarity = function () {
+          // Placeholder until actual script loads
+        };
+
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.src = `https://www.clarity.ms/tag/${this.clarityId}`;
+
+        script.onload = () => {
+          if (import.meta.env.DEV) {
+            console.log('[Analytics] Microsoft Clarity script loaded');
+          }
+          resolve();
+        };
+
+        script.onerror = () => {
+          console.error('[Analytics] Failed to load Microsoft Clarity script');
+          // Don't reject - Clarity is optional
+          resolve();
+        };
+
+        document.head.appendChild(script);
+      } catch (error) {
+        console.error('[Analytics] Error injecting Microsoft Clarity:', error);
+        // Don't reject - Clarity is optional
+        resolve();
+      }
+    });
   }
 
   /**
@@ -191,8 +283,7 @@ class AnalyticsService {
     const pagePath = path || window.location.pathname;
     const pageTitle = title || document.title;
 
-    // Google Analytics tracks page views automatically with send_page_view: true
-    // But we send manual page_view events for consistency
+    // Send manual page_view event to Google Analytics
     if (window.gtag) {
       try {
         window.gtag('event', 'page_view', {
