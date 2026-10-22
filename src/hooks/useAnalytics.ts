@@ -1,1 +1,24 @@
-/**\n * Custom hook for analytics tracking in React components\n */\n\nimport { useEffect } from 'react';\nimport analytics from '@/lib/analytics';\n\nexport const useAnalytics = () => {\n  /**\n   * Initialize analytics on component mount\n   */\n  useEffect(() => {\n    analytics.init();\n  }, []);\n\n  return {\n    trackEvent: analytics.trackEvent.bind(analytics),\n    trackPageView: analytics.trackPageView.bind(analytics),\n    trackLinkClick: analytics.trackLinkClick.bind(analytics),\n    trackButtonClick: analytics.trackButtonClick.bind(analytics),\n    trackDownload: analytics.trackDownload.bind(analytics),\n    trackEngagement: analytics.trackEngagement.bind(analytics),\n  };\n};\n"
+/**
+ * Custom hook for analytics tracking in React components
+ */
+
+import { useEffect } from 'react';
+import analytics from '@/lib/analytics';
+
+export const useAnalytics = () => {
+  /**
+   * Initialize analytics on component mount
+   */
+  useEffect(() => {
+    analytics.init();
+  }, []);
+
+  return {
+    trackEvent: analytics.trackEvent.bind(analytics),
+    trackPageView: analytics.trackPageView.bind(analytics),
+    trackLinkClick: analytics.trackLinkClick.bind(analytics),
+    trackButtonClick: analytics.trackButtonClick.bind(analytics),
+    trackDownload: analytics.trackDownload.bind(analytics),
+    trackEngagement: analytics.trackEngagement.bind(analytics),
+  };
+};

@@ -4,18 +4,17 @@ import { Building2, GitBranch } from "lucide-react";
 
 const experiences = [
   {
-    role: "Backend & QA Engineering Intern",
+    role: "Software Engineering Intern",
     company: "PRAM EduTech",
     location: "Hyderabad, India",
     type: "Internship",
-    period: "August 2025 – January 2026",
+    period: "Oct 2025 – Dec 2025",
     description:
       "Worked on backend API validation and mobile application quality assurance across functional, integration, and regression testing cycles.",
     highlights: [
       "Validated REST API request and response behavior using Postman",
       "Performed mobile application functional, integration, and regression testing",
-      "Reproduced defects, documented issues, and retested fixes",
-      "Contributed to test coverage improvements across release cycles"
+      "Reproduced defects, documented issues, and retested fixes"
     ]
   }
 ];
@@ -25,7 +24,7 @@ const openSourceContributions = [
     role: "Open-Source Contributor",
     project: "vLLM",
     type: "Community Contribution",
-    period: "2025",
+    period: "October 2026",
     description:
       "Contributed a memory optimization to Qwen3-VL video-frame preprocessing in vLLM, an open-source AI inference framework. The change moves frame resizing earlier in the pipeline to reduce intermediate frame-buffer memory before downstream processor resizing.",
     highlights: [
