@@ -8,7 +8,7 @@ const experiences = [
     company: "PRAM EduTech",
     location: "Hyderabad, India",
     type: "Internship",
-    period: "October 2025 – December 2026",
+    period: "October 2026 – December 2026",
     description:
       "Worked on backend API validation and mobile application quality assurance across functional, integration, and regression testing cycles.",
     highlights: [
