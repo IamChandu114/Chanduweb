@@ -1,93 +1,89 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Brain, Server, Code2, Cloud, FlaskConical, Database } from "lucide-react";
+import { Brain, Server, Code2, FlaskConical, Cpu, Radio } from "lucide-react";
 
 const skillDomains = [
   {
-    icon: Brain,
-    title: "AI / ML / Deep Learning",
-    description: "Building intelligent systems from research to production",
+    icon: Code2,
+    title: "Languages",
+    description: "Used across projects and contributions",
     skills: [
-      { name: "PyTorch / TensorFlow", level: "Expert" },
-      { name: "Transformers & LLMs", level: "Expert" },
-      { name: "Computer Vision", level: "Advanced" },
-      { name: "NLP & Text Processing", level: "Expert" },
-      { name: "Reinforcement Learning", level: "Advanced" },
+      { name: "C++20", level: "Used in projects" },
+      { name: "Python", level: "Used in projects" },
+      { name: "TypeScript / JavaScript", level: "Used in projects" },
     ],
-    tools: ["PyTorch", "Hugging Face", "OpenAI API", "LangChain", "ONNX"]
+    tools: ["STL", "CMake", "NumPy", "FastAPI"]
   },
   {
     icon: Server,
-    title: "System Design & Architecture",
-    description: "Designing systems that scale to millions of users",
+    title: "Systems Engineering",
+    description: "Fundamentals applied in real codebases",
     skills: [
-      { name: "Distributed Systems", level: "Expert" },
-      { name: "Microservices", level: "Expert" },
-      { name: "Event-Driven Architecture", level: "Advanced" },
-      { name: "API Design", level: "Expert" },
-      { name: "Performance Optimization", level: "Expert" },
+      { name: "Data Structures & Algorithms", level: "Used in projects" },
+      { name: "Memory & Performance Analysis", level: "Used in projects" },
+      { name: "Testing & Sanitizers (ASan/UBSan)", level: "Used in projects" },
+      { name: "Benchmarking", level: "Used in projects" },
+      { name: "Linux", level: "Used in projects" },
     ],
-    tools: ["Kafka", "Redis", "PostgreSQL", "MongoDB", "gRPC"]
+    tools: ["GoogleTest", "Valgrind", "perf", "CMake"]
   },
   {
-    icon: Code2,
-    title: "Full-Stack Engineering",
-    description: "End-to-end development from backend to frontend",
+    icon: Brain,
+    title: "AI / ML Infrastructure",
+    description: "From model preprocessing to inference optimization",
     skills: [
-      { name: "Python", level: "Expert" },
-      { name: "TypeScript / React", level: "Advanced" },
-      { name: "Node.js", level: "Advanced" },
-      { name: "Go", level: "Advanced" },
-      { name: "Rust", level: "Advanced" },
+      { name: "PyTorch", level: "Used in projects" },
+      { name: "Hugging Face / vLLM", level: "Open-source contribution" },
+      { name: "Model Preprocessing & Inference", level: "Used in projects" },
+      { name: "OpenCV", level: "Used in projects" },
+      { name: "FastAPI", level: "Used in projects" },
     ],
-    tools: ["FastAPI", "React", "Next.js", "GraphQL", "Prisma"]
-  },
-  {
-    icon: Cloud,
-    title: "MLOps & Cloud Infrastructure",
-    description: "Deploying and scaling ML systems reliably",
-    skills: [
-      { name: "Kubernetes", level: "Expert" },
-      { name: "Docker", level: "Expert" },
-      { name: "CI/CD Pipelines", level: "Expert" },
-      { name: "Model Serving", level: "Expert" },
-      { name: "Infrastructure as Code", level: "Advanced" },
-    ],
-    tools: ["AWS", "GCP", "Terraform", "MLflow", "Kubeflow"]
-  },
-  {
-    icon: Database,
-    title: "Data Engineering",
-    description: "Building robust data pipelines and infrastructure",
-    skills: [
-      { name: "Data Pipeline Design", level: "Expert" },
-      { name: "ETL / ELT", level: "Expert" },
-      { name: "Data Modeling", level: "Advanced" },
-      { name: "Stream Processing", level: "Advanced" },
-      { name: "Data Warehousing", level: "Advanced" },
-    ],
-    tools: ["Apache Spark", "Airflow", "dbt", "Snowflake", "Delta Lake"]
+    tools: ["PyTorch", "Hugging Face", "OpenCV", "FastAPI", "NumPy"]
   },
   {
     icon: FlaskConical,
-    title: "Research & Problem Solving",
-    description: "Translating research into production solutions",
+    title: "Software Engineering",
+    description: "Tooling and practices used across projects",
     skills: [
-      { name: "Paper Implementation", level: "Expert" },
-      { name: "Experiment Design", level: "Expert" },
-      { name: "Statistical Analysis", level: "Advanced" },
-      { name: "A/B Testing", level: "Expert" },
-      { name: "Technical Writing", level: "Advanced" },
+      { name: "Git & GitHub", level: "Used in projects" },
+      { name: "Automated Testing", level: "Used in projects" },
+      { name: "REST APIs", level: "Used in projects" },
+      { name: "Docker", level: "Familiar with" },
+      { name: "CI/CD", level: "Familiar with" },
     ],
-    tools: ["Jupyter", "Weights & Biases", "Git", "LaTeX", "Notion"]
+    tools: ["Git", "GitHub Actions", "Docker", "Postman"]
+  },
+  {
+    icon: Cpu,
+    title: "Computer Architecture",
+    description: "Applied in QuantumRISC and coursework",
+    skills: [
+      { name: "RISC Architecture", level: "Used in projects" },
+      { name: "Digital Logic Design", level: "Used in projects" },
+      { name: "HDL / Verilog", level: "Used in projects" },
+      { name: "Instruction-Set Design", level: "Used in projects" },
+    ],
+    tools: ["Verilog", "ModelSim", "Digital Logic Simulation"]
+  },
+  {
+    icon: Radio,
+    title: "Wireless & Signal Processing",
+    description: "Applied in WaveCore X simulator",
+    skills: [
+      { name: "Digital Modulation (BPSK–256-QAM)", level: "Used in projects" },
+      { name: "OFDM & Channel Modeling", level: "Used in projects" },
+      { name: "BER / SER / EVM Analysis", level: "Used in projects" },
+      { name: "Error-Correction Coding", level: "Used in projects" },
+    ],
+    tools: ["NumPy", "SciPy", "Matplotlib", "FastAPI"]
   },
 ];
 
 const getLevelColor = (level: string) => {
   switch (level) {
-    case "Expert": return "bg-accent text-accent-foreground";
-    case "Advanced": return "bg-accent/20 text-accent";
-    case "Intermediate": return "bg-muted text-muted-foreground";
+    case "Open-source contribution": return "bg-accent text-accent-foreground";
+    case "Used in projects": return "bg-accent/20 text-accent";
+    case "Familiar with": return "bg-muted text-muted-foreground";
     default: return "bg-muted/50 text-muted-foreground";
   }
 };
@@ -105,13 +101,13 @@ export const SkillsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="section-label">Skills & Expertise</span>
+          <span className="section-label">Skills & Technical Areas</span>
           <h2 className="section-title">
-            Deep, Not Wide. Expertise That Delivers.
+            Grounded in Projects. Honest About Depth.
           </h2>
           <p className="section-subtitle mx-auto">
-            These aren't just technologies I've used — they're tools I've mastered through building 
-            real systems that serve real users at scale.
+            Skills verified against actual project work and open-source contributions —
+            not padded with technologies I've only read about.
           </p>
         </motion.div>
 
@@ -135,9 +131,9 @@ export const SkillsSection = () => {
               
               <div className="space-y-2.5 mb-5">
                 {domain.skills.map((skill) => (
-                  <div key={skill.name} className="flex items-center justify-between">
+                  <div key={skill.name} className="flex items-center justify-between gap-2">
                     <span className="text-sm text-foreground/80">{skill.name}</span>
-                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${getLevelColor(skill.level)}`}>
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full shrink-0 ${getLevelColor(skill.level)}`}>
                       {skill.level}
                     </span>
                   </div>

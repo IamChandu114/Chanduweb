@@ -1,20 +1,20 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Mail, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroVisual from "@/assets/hero-visual.png";
 import analytics from "@/lib/analytics";
 
 export const HeroSection = () => {
   const handleProjectsClick = () => {
-    analytics.trackButtonClick("view_my_work", "hero");
-  };
-
-  const handleLetsTalkClick = () => {
-    analytics.trackButtonClick("lets_talk_phone", "hero");
+    analytics.trackButtonClick("explore_my_work", "hero");
   };
 
   const handleGitHubClick = () => {
-    analytics.trackLinkClick("GitHub Social", "https://github.com/IamChandu114/", "social_hero");
+    analytics.trackLinkClick("GitHub Profile", "https://github.com/IamChandu114/", "hero_cta");
+  };
+
+  const handleResumeClick = () => {
+    analytics.trackDownload("Chandu_Resume_1.pdf", "pdf");
   };
 
   const handleLinkedInClick = () => {
@@ -49,14 +49,14 @@ export const HeroSection = () => {
 
       <div className="section-container relative z-10 pt-32 pb-20">
         <div className="max-w-4xl">
-          {/* Availability Badge */}
+          {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <span className="status-badge mb-8 inline-flex">
-              Open to Elite Opportunities
+              SYSTEMS ENGINEERING · AI INFRASTRUCTURE · OPEN SOURCE
             </span>
           </motion.div>
 
@@ -67,9 +67,8 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] mb-6"
           >
-            AI Engineer building{" "}
-            <span className="gradient-text">systems that scale</span>{" "}
-            in the real world.
+            Building Systems.{" "}
+            <span className="gradient-text">Measuring What Matters.</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -79,8 +78,9 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-xl sm:text-2xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
           >
-            From research to production — I architect intelligent systems, deploy ML at scale,
-            and solve problems that matter. End-to-end ownership, zero fluff.
+            I'm a Computer Science student focused on C++ performance engineering,
+            AI inference infrastructure, and reliable intelligent systems. I build,
+            benchmark, test, and contribute to real codebases.
           </motion.p>
 
           {/* CTAs */}
@@ -96,10 +96,19 @@ export const HeroSection = () => {
               asChild
               onClick={handleProjectsClick}
             >
-              <a href="#projects">View My Work</a>
+              <a href="#projects">Explore My Work</a>
             </Button>
-            <Button variant="outline" size="lg" className="text-base px-8" asChild onClick={handleLetsTalkClick}>
-              <a href="tel:+919346281421">Let's Talk</a>
+            <Button variant="outline" size="lg" className="text-base px-8 gap-2" asChild onClick={handleGitHubClick}>
+              <a href="https://github.com/IamChandu114/" target="_blank" rel="noopener noreferrer">
+                <Github size={18} />
+                GitHub Profile
+              </a>
+            </Button>
+            <Button variant="ghost" size="lg" className="text-base px-8 gap-2" asChild onClick={handleResumeClick}>
+              <a href="/pdfs/Chandu_Resume_1.pdf" target="_blank" rel="noopener noreferrer">
+                <FileText size={18} />
+                Resume
+              </a>
             </Button>
           </motion.div>
 

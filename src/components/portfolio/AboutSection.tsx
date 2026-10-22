@@ -1,28 +1,23 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Lightbulb, Target, Zap, Layers } from "lucide-react";
+import { Gauge, ShieldCheck, Layers } from "lucide-react";
 
-const mindsetCards = [
+const principles = [
   {
-    icon: Target,
-    title: "Ownership Mindset",
-    description: "I don't just build features — I own outcomes. From architecture decisions to user impact, I take full responsibility for what I ship."
+    icon: Gauge,
+    title: "Measure Before Optimizing",
+    description: "Performance claims without benchmarks are guesses. I profile first, identify the real bottleneck, then optimize with evidence."
+  },
+  {
+    icon: ShieldCheck,
+    title: "Design for Correctness and Failure",
+    description: "Systems fail. I build with sanitizers, automated tests, rollback paths, and guardrails—so failures are caught early and handled gracefully."
   },
   {
     icon: Layers,
-    title: "Systems Thinking",
-    description: "Every component is part of a larger system. I design with scalability, maintainability, and real-world constraints in mind."
-  },
-  {
-    icon: Zap,
-    title: "Bias for Action",
-    description: "Perfect is the enemy of shipped. I iterate fast, validate with data, and course-correct when needed."
-  },
-  {
-    icon: Lightbulb,
-    title: "First Principles",
-    description: "I question assumptions and solve problems from the ground up. The best solutions often emerge from fundamentals."
+    title: "Build from Fundamentals",
+    description: "Understanding how data moves, where memory is spent, and why components fail leads to better trade-off decisions and more honest documentation."
   }
 ];
 
@@ -41,12 +36,11 @@ export const AboutSection = () => {
         >
           <span className="section-label">About Me</span>
           <h2 className="section-title">
-            Not Just an Engineer. A Builder.
+            Engineering with Evidence.
           </h2>
           <p className="section-subtitle mx-auto">
-            I'm an AI Engineer who bridges the gap between cutting-edge research and production systems. 
-            My work sits at the intersection of machine learning, system design, and product thinking — 
-            building solutions that don't just work in notebooks, but scale in the real world.
+            B.Tech Computer Science student specializing in AI/ML, with a growing focus on systems
+            engineering, performance, and AI infrastructure.
           </p>
         </motion.div>
 
@@ -58,20 +52,20 @@ export const AboutSection = () => {
         >
           <div className="glass-card p-8 sm:p-10">
             <p className="text-lg leading-relaxed text-foreground/90">
-              When I approach a problem, I don't start with the technology — I start with the impact. 
-              What's the outcome we're optimizing for? What are the constraints? How do we measure success?
+              I enjoy understanding systems below the surface — how data moves, where memory is spent,
+              how components fail, and how performance can be measured rather than assumed.
             </p>
             <p className="text-lg leading-relaxed text-foreground/90 mt-4">
-              This mindset has led me to build AI systems that process millions of decisions daily, 
-              deploy models that run at sub-second latencies, and architect pipelines that teams can 
-              actually maintain. I believe the best engineering is invisible — users should experience 
-              magic, not complexity.
+              My work spans C++ systems projects, autonomous runtime intelligence, wireless
+              signal-processing simulations, computer architecture, and open-source contributions
+              to production AI inference frameworks. I value reproducible experiments, clear
+              engineering trade-offs, automated testing, and honest technical documentation.
             </p>
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {mindsetCards.map((card, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {principles.map((card, index) => (
             <motion.div
               key={card.title}
               initial={{ opacity: 0, y: 30 }}

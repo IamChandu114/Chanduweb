@@ -6,9 +6,9 @@ import analytics from "@/lib/analytics";
 
 const navItems = [
   { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
-  { label: "Research", href: "#research" },
+  { label: "Open Source", href: "#research" },
+  { label: "Skills", href: "#skills" },
   { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ];
@@ -76,7 +76,7 @@ export const Navigation = () => {
                 asChild
                 onClick={handleContactClick}
               >
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdzUfxJ13M-bnXPh6NUWPa9F8d7xn47FcUmZjzuO2d9O2-gqQ/viewform?usp=header">
+                <a href="#contact">
                   Get in Touch
                 </a>
               </Button>
@@ -150,7 +150,7 @@ export const Navigation = () => {
                   asChild
                   onClick={handleResumeClick}
                 >
-                  <a href="/resume.pdf" target="_blank">
+                  <a href="/pdfs/Chandu_Resume_1.pdf" target="_blank" rel="noopener noreferrer">
                     Download Resume
                   </a>
                 </Button>

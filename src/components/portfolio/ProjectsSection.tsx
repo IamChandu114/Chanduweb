@@ -2,187 +2,116 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import {
   ArrowUpRight,
-  Zap,
-  FileSearch,
-  ShoppingCart,
-  Brain,
-  Languages,
-  Database
+  Github,
+  Cpu,
+  Radio,
+  Bot,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import analytics from "@/lib/analytics";
 
 const projects = [
   {
-    title: "End-to-End Data Scientist Platform",
-    tagline: "From raw data to production intelligence",
+    title: "ApexHFT",
+    subtitle: "C++ Matching Engine & Performance Lab",
+    tagline: "Deterministic order-book simulator built for correctness and benchmarking",
     problem:
-      "Data science workflows were fragmented across tools, making experimentation, deployment, and monitoring slow and error-prone.",
-    solution:
-      "Built a unified platform covering data ingestion, feature engineering, model training, evaluation, deployment, and monitoring in one pipeline.",
-    impact: [
-      "Reduced model deployment time by 65%",
-      "Automated 90% of manual data preprocessing",
-      "Enabled real-time model performance tracking",
-      "Improved experimentation velocity by 3×"
+      "Understanding matching-engine design, memory allocation trade-offs, and how to measure OMS replay performance with reproducible methodology.",
+    approach:
+      "Built a deterministic, offline order-book and matching-engine simulator in C++20. Focused on correct event replay, memory layout decisions, and automated sanitizer-backed testing.",
+    keyDetails: [
+      "C++20 with modern build tooling (CMake)",
+      "Order-book and matching-engine design",
+      "Deterministic event replay pipeline",
+      "Sanitizer-backed correctness checks (ASan, UBSan)",
+      "Automated test suite for matching logic",
+      "Benchmark: 25.5× faster OMS replay vs. measured baseline"
     ],
-    techStack: [
-      "Python",
-      "Pandas",
-      "Scikit-learn",
-      "PyTorch",
-      "MLflow",
-      "Docker",
-      "FastAPI"
-    ],
-    hardPart:
-      "Designing a reproducible pipeline that handled both batch and real-time data while ensuring experiment traceability.",
-    icon: Database,
-    color: "from-emerald-500 to-teal-500",
-    caseStudyUrl: "https://end-end-datascience-1-1.onrender.com",
-    id: "data_scientist_platform"
-  },
-
-  {
-    title: "AI Decision Engine",
-    tagline: "Real-time intelligence at scale",
-    problem:
-      "Enterprise decision-making systems were slow, inconsistent, and unable to adapt to rapidly changing conditions.",
-    solution:
-      "Engineered a multi-model AI decision engine capable of real-time inference with dynamic routing and prioritization.",
-    impact: [
-      "50,000+ decisions processed per second",
-      "<10ms P99 latency under load",
-      "40% improvement in decision accuracy",
-      "99.99% system availability"
-    ],
-    techStack: [
-      "PyTorch",
-      "Kafka",
-      "Redis",
-      "Go",
-      "Kubernetes",
-      "gRPC"
-    ],
-    hardPart:
-      "Maintaining ultra-low latency under burst traffic required custom model caching, intelligent batching, and a priority-aware execution layer.",
+    note: "25.5× is a benchmark result against a measured baseline — not a claim about exchange-grade or production latency.",
+    techStack: ["C++20", "CMake", "GoogleTest", "ASan/UBSan", "Benchmarking"],
     icon: Zap,
-    color: "from-blue-500 to-cyan-500",
-    caseStudyUrl: "https://ai-decision-engine-wnuq.vercel.app/ui/",
-    id: "ai_decision_engine"
+    color: "from-amber-500 to-orange-500",
+    githubUrl: "https://github.com/IamChandu114/ApexHFT",
+    liveUrl: null,
+    id: "apexhft",
+    priority: true
   },
-
   {
-    title: "No-Language AI",
-    tagline: "Intelligence beyond human language",
+    title: "QuantumRISC",
+    subtitle: "Computer Architecture & Digital Systems",
+    tagline: "RISC processor architecture with quantum-inspired computing exploration",
     problem:
-      "Most AI systems depend heavily on natural language, limiting their ability to reason over raw signals, patterns, and intent.",
-    solution:
-      "Developed a language-free AI system that learns directly from behavior, sequences, and embeddings without textual supervision.",
-    impact: [
-      "Eliminated language dependency for core reasoning",
-      "Improved generalization across domains",
-      "Reduced training data requirements by 30%",
-      "Enabled cross-modal intelligence"
+      "Exploring processor design from first principles — instruction execution, digital logic, and how quantum-inspired computation can be layered on classical architecture.",
+    approach:
+      "Implemented a RISC-style architecture with modular digital logic design. Includes instruction-set design, module verification, and reproducible simulation outputs.",
+    keyDetails: [
+      "RISC instruction-set architecture design",
+      "Digital logic module design and verification",
+      "Instruction execution and simulation model",
+      "Quantum-inspired computation layers",
+      "Tests and reproducible example outputs",
+      "Selected for XERJ Corpus Hub open-source recognition"
     ],
-    techStack: [
-      "PyTorch",
-      "Transformers",
-      "Self-Supervised Learning",
-      "NumPy",
-      "CUDA"
-    ],
-    hardPart:
-      "Designing meaningful representations without linguistic anchors required novel embedding alignment and contrastive objectives.",
-    icon: Languages,
-    color: "from-purple-500 to-pink-500",
-    caseStudyUrl: "https://no-language-ai-01.streamlit.app/",
-    id: "no_language_ai"
+    note: "XERJ Corpus Hub selection is an open-source recognition — not employment at XERJ.",
+    techStack: ["Verilog/HDL", "Digital Logic", "Computer Architecture", "Simulation"],
+    icon: Cpu,
+    color: "from-violet-500 to-purple-500",
+    githubUrl: "https://github.com/IamChandu114/-QuantumRISC",
+    liveUrl: null,
+    id: "quantumrisc",
+    priority: true
   },
-
   {
-    title: "Self-Evolving Intelligence System",
-    tagline: "AI that improves itself over time",
+    title: "AstraOS",
+    subtitle: "Autonomous Runtime Intelligence Platform",
+    tagline: "Observability-first runtime platform with bounded autonomous decision support",
     problem:
-      "Most AI systems become static once deployed, slowly degrading as real-world conditions change. Fixing this usually requires costly retraining and manual intervention",
-    solution:
-      "Designed a self-evolving intelligence system that adapts its decision strategy in real time using feedback and memory — without retraining or redeployment.",
-    impact: [
-      "Reduced manual retraining effort by 70%",
-      "Improved long-term decision quality",
-      "Enabled autonomous adaptation to new inputs and environments",
-      "Maintained stable behavior under continuous evolution"
+      "Building a system that monitors host runtime state, forecasts resource needs, and supports bounded autonomous actions — with rollback, evidence tracking, and failure handling.",
+    approach:
+      "Designed for observability and reliability. Implements host telemetry, resource monitoring, guardrail-bounded actions, rollback mechanisms, and edge-node health monitoring.",
+    keyDetails: [
+      "Host runtime telemetry and resource monitoring",
+      "Resource forecasting and runtime intelligence",
+      "Guardrail-bounded autonomous actions",
+      "Rollback and evidence tracking",
+      "Edge-node heartbeat and health monitoring",
+      "Digital-twin and chaos-testing capabilities"
     ],
-    techStack: [
-      "PyTorch",
-      "Reinforcement Learning",
-      "Online Learning",
-      "Ray",
-      "Docker"
-    ],
-    hardPart:
-      "Preventing catastrophic forgetting while allowing safe self-improvement required strict evaluation gates and rollback mechanisms.",
-    icon: Brain,
-    color: "from-orange-500 to-red-500",
-    caseStudyUrl: "https://fttqefscunaoqy59q96vc5.streamlit.app/",
-    id: "self_evolving_system"
+    note: "This is a development-stage platform — not operating in production or managing live infrastructure.",
+    techStack: ["Python", "FastAPI", "Docker", "Observability", "Systems Design"],
+    icon: Bot,
+    color: "from-cyan-500 to-blue-500",
+    githubUrl: "https://github.com/IamChandu114/AstraOS-Autonomous-Runtime-Intelligence-Platform",
+    liveUrl: null,
+    id: "astraos",
+    priority: false
   },
-
   {
-    title: "Full-Stack E-Commerce Platform",
-    tagline: "Scalable commerce from frontend to backend",
+    title: "WaveCore X",
+    subtitle: "Wireless Communication Systems Simulator",
+    tagline: "Full-stack simulation platform for digital modulation, channel modeling, and BER analysis",
     problem:
-      "Existing e-commerce solutions lacked scalability, personalization, and performance under high traffic.",
-    solution:
-      "Developed a full-stack e-commerce platform with secure payments, real-time inventory, and optimized user experience.",
-    impact: [
-      "Handled thousands of concurrent users",
-      "Improved page load time by 45%",
-      "Secure payment and order processing",
-      "Highly modular and scalable architecture"
+      "Simulating and visualizing wireless communication system behavior across modulation schemes, channel models, and coding techniques in an interactive, API-driven interface.",
+    approach:
+      "Built a communication-systems simulation platform with a React frontend and API-driven backend. Supports digital modulation from BPSK through 256-QAM, OFDM, and multiple channel and equalization models.",
+    keyDetails: [
+      "Digital modulation: BPSK, QPSK, 16-QAM through 256-QAM",
+      "OFDM with cyclic prefix",
+      "AWGN, Rayleigh, and Rician channel models",
+      "Zero-forcing and MMSE equalization",
+      "BER, SER, and EVM analysis",
+      "CRC-16 and Hamming (7,4) error-correction coding",
+      "API-driven simulation with live visualization"
     ],
-    techStack: [
-      "React",
-      "Next.js",
-      "Node.js",
-      "Express",
-      "MongoDB",
-      "Stripe"
-    ],
-    hardPart:
-      "Balancing performance, security, and scalability while keeping the UX fast and intuitive across devices.",
-    icon: ShoppingCart,
-    color: "from-yellow-500 to-orange-500",
-    caseStudyUrl: "https://spectacular-platypus-7e2660.netlify.app/",
-    id: "ecommerce_platform"
-  },
-
-  {
-    title: "AI Resume Analyzer",
-    tagline: "Hiring intelligence at machine speed",
-    problem:
-      "Recruiters struggled to screen large volumes of resumes efficiently and objectively.",
-    solution:
-      "Built an AI-powered resume analyzer that extracts skills, scores candidates, and matches profiles to job roles.",
-    impact: [
-      "Reduced screening time by 80%",
-      "Improved candidate-job matching accuracy",
-      "Automated skill extraction at scale",
-      "Enabled bias-aware evaluation"
-    ],
-    techStack: [
-      "Python",
-      "NLP",
-      "Transformers",
-      "FastAPI",
-      "React"
-    ],
-    hardPart:
-      "Designing fair scoring mechanisms while handling diverse resume formats and unstructured data.",
-    icon: FileSearch,
-    color: "from-indigo-500 to-violet-500",
-    caseStudyUrl: "https://aic-resume-analyzer.onrender.com/",
-    id: "resume_analyzer"
+    note: "A communication-systems simulation platform — not a certified 3GPP modem or commercial deployment.",
+    techStack: ["Python", "NumPy", "FastAPI", "React", "TypeScript", "Signal Processing"],
+    icon: Radio,
+    color: "from-emerald-500 to-teal-500",
+    githubUrl: "https://github.com/IamChandu114/wavecore-x-website",
+    liveUrl: "https://wavecore-x-website.vercel.app",
+    id: "wavecore_x",
+    priority: false
   }
 ];
 
@@ -203,11 +132,11 @@ export const ProjectsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="section-label">Flagship Projects</span>
-          <h2 className="section-title">Not Demos. Production Systems.</h2>
+          <span className="section-label">Engineering Projects</span>
+          <h2 className="section-title">Real Work. Measurable Evidence.</h2>
           <p className="section-subtitle mx-auto">
-            These aren't weekend projects or tutorials. They're real systems solving real problems
-            at scale — built from scratch, deployed in production, and battle-tested.
+            Projects built from fundamentals — with automated tests, benchmarks, and honest
+            documentation about what each system does and doesn't do.
           </p>
         </motion.div>
 
@@ -229,23 +158,25 @@ export const ProjectsSection = () => {
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-foreground">{project.title}</h3>
-                        <p className="text-muted-foreground">{project.tagline}</p>
+                        <p className="text-accent font-medium text-sm">{project.subtitle}</p>
+                        <p className="text-muted-foreground text-sm">{project.tagline}</p>
                       </div>
                     </div>
 
                     <div className="space-y-4 mb-6">
                       <div>
-                        <h4 className="text-sm font-semibold text-foreground mb-1">The Problem</h4>
+                        <h4 className="text-sm font-semibold text-foreground mb-1">Problem Explored</h4>
                         <p className="text-muted-foreground">{project.problem}</p>
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-foreground mb-1">The Solution</h4>
-                        <p className="text-muted-foreground">{project.solution}</p>
+                        <h4 className="text-sm font-semibold text-foreground mb-1">Engineering Approach</h4>
+                        <p className="text-muted-foreground">{project.approach}</p>
                       </div>
-                      <div>
-                        <h4 className="text-sm font-semibold text-foreground mb-1">What Made It Hard</h4>
-                        <p className="text-muted-foreground text-sm italic">{project.hardPart}</p>
-                      </div>
+                      {project.note && (
+                        <p className="text-xs text-muted-foreground italic border-l-2 border-accent/30 pl-3">
+                          {project.note}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -262,33 +193,52 @@ export const ProjectsSection = () => {
 
                   <div className="lg:w-72 shrink-0">
                     <div className="bg-gradient-dark-glass rounded-2xl p-6 border border-border/50">
-                      <h4 className="text-sm font-semibold text-foreground mb-4">Impact & Results</h4>
+                      <h4 className="text-sm font-semibold text-foreground mb-4">Key Implementation Details</h4>
                       <ul className="space-y-3">
-                        {project.impact.map((metric) => (
-                          <li key={metric} className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                            <span className="text-sm text-foreground/80">{metric}</span>
+                        {project.keyDetails.map((detail) => (
+                          <li key={detail} className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
+                            <span className="text-sm text-foreground/80">{detail}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
 
-                    <Button variant="ghost" className="w-full mt-4 group/btn" asChild>
-                      <a
-                        href={project.caseStudyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => handleProjectClick(project.id, project.caseStudyUrl)}
-                        className="flex items-center justify-center gap-2"
-                      >
-                        View System
-                        <ArrowUpRight
-                          size={16}
-                          className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"
-                        />
-                      </a>
-                    </Button>
-
+                    <div className="flex gap-2 mt-4">
+                      <Button variant="ghost" className="flex-1 group/btn" asChild>
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => handleProjectClick(project.id, project.githubUrl)}
+                          className="flex items-center justify-center gap-2"
+                        >
+                          <Github size={16} />
+                          Source
+                          <ArrowUpRight
+                            size={14}
+                            className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"
+                          />
+                        </a>
+                      </Button>
+                      {project.liveUrl && (
+                        <Button variant="ghost" className="flex-1 group/btn" asChild>
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => handleProjectClick(project.id + "_live", project.liveUrl!)}
+                            className="flex items-center justify-center gap-2"
+                          >
+                            Live Demo
+                            <ArrowUpRight
+                              size={14}
+                              className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"
+                            />
+                          </a>
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -1,50 +1,46 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { TrendingUp, Users, Zap, Award } from "lucide-react";
-
-const metrics = [
-  {
-    icon: Zap,
-    value: "10K+",
-    label: "Requests Processed",
-    description: "Across full-stack and AI-powered projects"
-  },
-  {
-    icon: Users,
-    value: "100+",
-    label: "Happy Clients",
-    description: "clients served with excellence and dedication"
-  },
-  {
-    icon: TrendingUp,
-    value: "40%",
-    label: "Efficiency Gains",
-    description: "Average improvement in key metrics"
-  },
-  {
-    icon: Award,
-    value: "99.99%",
-    label: "Production Reliability",
-    description: "Handled real users with minimal downtime"
-  }
-];
-
-const testimonials = [
-  {
-    quote: "One of the most effective engineers I've worked with. Takes ownership of complex problems and delivers solutions that actually work.",
-    author: "Senior Developer",
-    company: "Tech company"
-  },
-  {
-    quote: "Rare combination of deep technical skills and product thinking. Doesn't just build features — understands why they matter.",
-    author: "Product Manager",
-    company: "AI Startup"
-  }
-];
+import { ArrowUpRight, GitPullRequest, FlaskConical, FileText, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const MetricsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const evidence = [
+    {
+      icon: GitPullRequest,
+      label: "vLLM PR #61096",
+      detail: "Qwen3-VL early frame resize — frame-buffer memory: 13.18 MiB → 2.11 MiB on synthetic 720p benchmark (~84% reduction). PR under review.",
+      context: "Synthetic 720p benchmark result. Not a universal vLLM memory reduction.",
+      url: "https://github.com/vllm-project/vllm/pull/61096",
+      cta: "View Pull Request"
+    },
+    {
+      icon: FlaskConical,
+      label: "ApexHFT Benchmark",
+      detail: "25.5× faster OMS replay vs. measured baseline. Verified via deterministic event replay with sanitizer-backed correctness checks.",
+      context: "Benchmark result against measured baseline — not exchange-grade production latency.",
+      url: "https://github.com/IamChandu114/ApexHFT",
+      cta: "View Repository"
+    },
+    {
+      icon: FileText,
+      label: "WaveCore X Simulation",
+      detail: "Full-stack wireless communication simulator: BPSK–256-QAM, OFDM, AWGN/Rayleigh/Rician channels, ZF/MMSE equalization, BER/SER/EVM analysis.",
+      context: "Simulation platform — not a certified 3GPP modem.",
+      url: "https://wavecore-x-website.vercel.app",
+      cta: "View Live Demo"
+    },
+    {
+      icon: ExternalLink,
+      label: "QuantumRISC — XERJ Corpus Hub",
+      detail: "RISC architecture and digital logic simulation selected for XERJ Corpus Hub open-source recognition.",
+      context: "Open-source recognition — not employment at XERJ.",
+      url: "https://github.com/IamChandu114/-QuantumRISC",
+      cta: "View Repository"
+    }
+  ];
 
   return (
     <section className="py-32" ref={ref}>
@@ -55,71 +51,44 @@ export const MetricsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="section-label">Impact</span>
+          <span className="section-label">Engineering Evidence</span>
           <h2 className="section-title">
-            Numbers Don't Lie
+            Selected Engineering Evidence
           </h2>
           <p className="section-subtitle mx-auto">
-            Real metrics from real systems. These aren't vanity numbers — they represent 
-            tangible impact on products and users.
+            Verifiable artifacts from real projects — benchmarks, contributions, and demonstrations
+            with clear context about what each figure measures.
           </p>
         </motion.div>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-          {metrics.map((metric, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {evidence.map((item, index) => (
             <motion.div
-              key={metric.label}
+              key={item.label}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
-              className="metric-card group"
+              className="glass-card p-6 flex flex-col gap-4"
             >
-              <div className="inline-flex p-3 rounded-xl bg-accent/10 text-accent mb-4 group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
-                <metric.icon size={24} />
+              <div className="flex items-center gap-3">
+                <div className="inline-flex p-3 rounded-xl bg-accent/10 text-accent">
+                  <item.icon size={22} />
+                </div>
+                <h3 className="font-semibold text-foreground">{item.label}</h3>
               </div>
-              <div className="text-4xl font-bold text-foreground mb-1">{metric.value}</div>
-              <div className="text-sm font-medium text-foreground mb-1">{metric.label}</div>
-              <div className="text-xs text-muted-foreground">{metric.description}</div>
+              <p className="text-sm text-foreground/80 leading-relaxed">{item.detail}</p>
+              <p className="text-xs text-muted-foreground italic border-l-2 border-accent/30 pl-3">
+                {item.context}
+              </p>
+              <Button variant="ghost" size="sm" className="self-start gap-2 px-0 hover:px-3 transition-all" asChild>
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                  {item.cta}
+                  <ArrowUpRight size={14} />
+                </a>
+              </Button>
             </motion.div>
           ))}
         </div>
-
-        {/* Testimonials */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="max-w-4xl mx-auto"
-        >
-          <h3 className="text-lg font-semibold text-center text-muted-foreground mb-8">
-            What People Say
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.author}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                className="glass-card p-6"
-              >
-                <blockquote className="text-foreground/90 mb-4 leading-relaxed">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-semibold">
-                    {testimonial.author.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-medium text-foreground text-sm">{testimonial.author}</div>
-                    <div className="text-xs text-muted-foreground">{testimonial.company}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );
