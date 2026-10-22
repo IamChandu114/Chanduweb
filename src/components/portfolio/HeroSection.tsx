@@ -56,7 +56,7 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <span className="status-badge mb-8 inline-flex">
-              SYSTEMS ENGINEERING · AI INFRASTRUCTURE · OPEN SOURCE
+              C++ SYSTEMS ENGINEERING · AI INFERENCE INFRASTRUCTURE · PERFORMANCE OPTIMIZATION
             </span>
           </motion.div>
 
@@ -67,8 +67,7 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] mb-6"
           >
-            Building Systems.{" "}
-            <span className="gradient-text">Measuring What Matters.</span>
+            Engineering Performance-Critical Systems.
           </motion.h1>
 
           {/* Subtitle */}
@@ -78,9 +77,7 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-xl sm:text-2xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
           >
-            I'm a Computer Science student focused on C++ performance engineering,
-            AI inference infrastructure, and reliable intelligent systems. I build,
-            benchmark, test, and contribute to real codebases.
+            I engineer performance-critical software, optimize AI inference pipelines, and build reliable systems grounded in correctness, rigorous testing, and reproducible performance measurement.
           </motion.p>
 
           {/* CTAs */}

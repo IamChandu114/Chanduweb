@@ -7,17 +7,17 @@ const principles = [
   {
     icon: Gauge,
     title: "Measure Before Optimizing",
-    description: "Performance claims without benchmarks are guesses. I profile first, identify the real bottleneck, then optimize with evidence."
+    description: "I establish a baseline, identify bottlenecks, and validate changes through reproducible benchmarks. Performance improvements should be supported by measurements, not assumptions."
   },
   {
     icon: ShieldCheck,
-    title: "Design for Correctness and Failure",
-    description: "Systems fail. I build with sanitizers, automated tests, rollback paths, and guardrails—so failures are caught early and handled gracefully."
+    title: "Correctness Under Real-World Constraints",
+    description: "I use automated tests, sanitizers, validation checks, and failure-aware design to investigate edge cases and strengthen system reliability. Correctness comes before optimization."
   },
   {
     icon: Layers,
-    title: "Build from Fundamentals",
-    description: "Understanding how data moves, where memory is spent, and why components fail leads to better trade-off decisions and more honest documentation."
+    title: "Understand the System at Its Core",
+    description: "I investigate data structures, memory behavior, execution paths, and component interactions to make informed engineering decisions. Understanding the underlying mechanics leads to better trade-offs and more defensible solutions."
   }
 ];
 
@@ -39,8 +39,7 @@ export const AboutSection = () => {
             Engineering with Evidence.
           </h2>
           <p className="section-subtitle mx-auto">
-            B.Tech Computer Science student specializing in AI/ML, with a growing focus on systems
-            engineering, performance, and AI infrastructure.
+            My engineering work focuses on performance-critical systems, AI inference infrastructure, and reliable software design. I approach technical problems by investigating system behavior, identifying bottlenecks, validating assumptions, and measuring results.
           </p>
         </motion.div>
 
@@ -52,14 +51,10 @@ export const AboutSection = () => {
         >
           <div className="glass-card p-8 sm:p-10">
             <p className="text-lg leading-relaxed text-foreground/90">
-              I enjoy understanding systems below the surface — how data moves, where memory is spent,
-              how components fail, and how performance can be measured rather than assumed.
+              Across C++ systems engineering, runtime intelligence, wireless signal-processing simulation, computer architecture, and open-source development, I focus on understanding how components interact, how memory and computation affect performance, and how correctness holds under different operating conditions.
             </p>
             <p className="text-lg leading-relaxed text-foreground/90 mt-4">
-              My work spans C++ systems projects, autonomous runtime intelligence, wireless
-              signal-processing simulations, computer architecture, and open-source contributions
-              to production AI inference frameworks. I value reproducible experiments, clear
-              engineering trade-offs, automated testing, and honest technical documentation.
+              I prioritize reproducible experiments, explicit engineering trade-offs, automated testing, and technical documentation that distinguishes measured results from theoretical expectations.
             </p>
           </div>
         </motion.div>
