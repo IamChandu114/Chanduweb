@@ -4,89 +4,90 @@ import { Brain, Server, Code2, FlaskConical, Cpu, Radio } from "lucide-react";
 
 const skillDomains = [
   {
-    icon: Code2,
-    title: "Languages",
-    description: "Used across projects and contributions",
-    skills: [
-      { name: "C++20", level: "Used in projects" },
-      { name: "Python", level: "Used in projects" },
-      { name: "TypeScript / JavaScript", level: "Used in projects" },
-    ],
-    tools: ["STL", "CMake", "NumPy", "FastAPI"]
-  },
-  {
     icon: Server,
-    title: "Systems Engineering",
-    description: "Fundamentals applied in real codebases",
+    title: "Systems & Performance Engineering",
+    subtitle: "C++ systems, correctness, and measurable performance",
     skills: [
-      { name: "Data Structures & Algorithms", level: "Used in projects" },
-      { name: "Memory & Performance Analysis", level: "Used in projects" },
-      { name: "Testing & Sanitizers (ASan/UBSan)", level: "Used in projects" },
-      { name: "Benchmarking", level: "Used in projects" },
-      { name: "Linux", level: "Used in projects" },
-    ],
-    tools: ["GoogleTest", "Valgrind", "perf", "CMake"]
+      "C++20",
+      "STL",
+      "Data Structures & Algorithms",
+      "Memory & Performance Analysis",
+      "Deterministic Event Replay",
+      "Benchmarking",
+      "ASan/UBSan",
+      "GoogleTest",
+      "Linux",
+      "CMake"
+    ]
   },
   {
     icon: Brain,
-    title: "AI / ML Infrastructure",
-    description: "From model preprocessing to inference optimization",
+    title: "AI Infrastructure & Open Source",
+    subtitle: "Model preprocessing and inference-oriented engineering",
     skills: [
-      { name: "PyTorch", level: "Used in projects" },
-      { name: "Hugging Face / vLLM", level: "Open-source contribution" },
-      { name: "Model Preprocessing & Inference", level: "Used in projects" },
-      { name: "OpenCV", level: "Used in projects" },
-      { name: "FastAPI", level: "Used in projects" },
-    ],
-    tools: ["PyTorch", "Hugging Face", "OpenCV", "FastAPI", "NumPy"]
-  },
-  {
-    icon: FlaskConical,
-    title: "Software Engineering",
-    description: "Tooling and practices used across projects",
-    skills: [
-      { name: "Git & GitHub", level: "Used in projects" },
-      { name: "Automated Testing", level: "Used in projects" },
-      { name: "REST APIs", level: "Used in projects" },
-      { name: "Docker", level: "Familiar with" },
-      { name: "CI/CD", level: "Familiar with" },
-    ],
-    tools: ["Git", "GitHub Actions", "Docker", "Postman"]
+      "Python",
+      "PyTorch",
+      "Hugging Face Transformers",
+      "vLLM Contribution",
+      "Qwen3-VL Video Preprocessing",
+      "OpenCV",
+      "NumPy",
+      "Memory-Efficient Processing"
+    ]
   },
   {
     icon: Cpu,
-    title: "Computer Architecture",
-    description: "Applied in QuantumRISC and coursework",
+    title: "Computer Architecture & Digital Systems",
+    subtitle: "Architecture and implementation through QuantumRISC",
     skills: [
-      { name: "RISC Architecture", level: "Used in projects" },
-      { name: "Digital Logic Design", level: "Used in projects" },
-      { name: "HDL / Verilog", level: "Used in projects" },
-      { name: "Instruction-Set Design", level: "Used in projects" },
-    ],
-    tools: ["Verilog", "ModelSim", "Digital Logic Simulation"]
+      "RISC Architecture",
+      "Instruction-Set Design",
+      "Digital Logic",
+      "HDL/Verilog",
+      "Digital Logic Simulation"
+    ]
   },
   {
     icon: Radio,
     title: "Wireless & Signal Processing",
-    description: "Applied in WaveCore X simulator",
+    subtitle: "Communication systems modeled in WaveCore X",
     skills: [
-      { name: "Digital Modulation (BPSK–256-QAM)", level: "Used in projects" },
-      { name: "OFDM & Channel Modeling", level: "Used in projects" },
-      { name: "BER / SER / EVM Analysis", level: "Used in projects" },
-      { name: "Error-Correction Coding", level: "Used in projects" },
-    ],
-    tools: ["NumPy", "SciPy", "Matplotlib", "FastAPI"]
+      "BPSK–256-QAM",
+      "OFDM",
+      "AWGN/Rayleigh/Rician Channels",
+      "ZF/MMSE Equalization",
+      "BER/SER/EVM Analysis",
+      "CRC-16",
+      "Hamming (7,4)"
+    ]
   },
-];
-
-const getLevelColor = (level: string) => {
-  switch (level) {
-    case "Open-source contribution": return "bg-accent text-accent-foreground";
-    case "Used in projects": return "bg-accent/20 text-accent";
-    case "Familiar with": return "bg-muted text-muted-foreground";
-    default: return "bg-muted/50 text-muted-foreground";
+  {
+    icon: Code2,
+    title: "Software Engineering & Infrastructure",
+    subtitle: "Reliable APIs, development workflows, and verification",
+    skills: [
+      "Git & GitHub",
+      "Automated Testing",
+      "REST APIs",
+      "FastAPI",
+      "TypeScript/JavaScript",
+      "Postman",
+      "Docker",
+      "CI/CD"
+    ]
+  },
+  {
+    icon: FlaskConical,
+    title: "Machine Learning & Data Tools",
+    subtitle: "Numerical computing and model development",
+    skills: [
+      "NumPy",
+      "Pandas",
+      "scikit-learn",
+      "TensorFlow (Defensible Foundation)"
+    ]
   }
-};
+];
 
 export const SkillsSection = () => {
   const ref = useRef(null);
@@ -101,13 +102,12 @@ export const SkillsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="section-label">Skills & Technical Areas</span>
+          <span className="section-label">Skills & Technical Expertise</span>
           <h2 className="section-title">
-            Grounded in Projects. Honest About Depth.
+            Systems. Performance. Intelligent Infrastructure.
           </h2>
           <p className="section-subtitle mx-auto">
-            Skills verified against actual project work and open-source contributions —
-            not padded with technologies I've only read about.
+            Engineering capabilities demonstrated through projects, benchmarks, testing, and open-source contributions.
           </p>
         </motion.div>
 
@@ -118,36 +118,25 @@ export const SkillsSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
-              className="skill-domain group"
+              className="skill-domain group flex flex-col justify-between"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
-                  <domain.icon size={22} />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">{domain.title}</h3>
-              </div>
-              
-              <p className="text-sm text-muted-foreground mb-5">{domain.description}</p>
-              
-              <div className="space-y-2.5 mb-5">
-                {domain.skills.map((skill) => (
-                  <div key={skill.name} className="flex items-center justify-between gap-2">
-                    <span className="text-sm text-foreground/80">{skill.name}</span>
-                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full shrink-0 ${getLevelColor(skill.level)}`}>
-                      {skill.level}
-                    </span>
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2.5 rounded-xl bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors shrink-0">
+                    <domain.icon size={22} />
                   </div>
-                ))}
-              </div>
-              
-              <div className="pt-4 border-t border-border/50">
-                <div className="flex flex-wrap gap-2">
-                  {domain.tools.map((tool) => (
+                  <h3 className="text-lg font-semibold text-foreground leading-snug">{domain.title}</h3>
+                </div>
+                
+                <p className="text-xs text-muted-foreground italic mb-5">{domain.subtitle}</p>
+                
+                <div className="flex flex-wrap gap-1.5">
+                  {domain.skills.map((skill) => (
                     <span
-                      key={tool}
-                      className="text-xs px-2.5 py-1 rounded-md bg-secondary text-secondary-foreground"
+                      key={skill}
+                      className="text-xs px-2.5 py-1 rounded-md bg-secondary text-secondary-foreground font-mono transition-colors hover:bg-accent/20 hover:text-accent"
                     >
-                      {tool}
+                      {skill}
                     </span>
                   ))}
                 </div>
@@ -155,6 +144,17 @@ export const SkillsSection = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="mt-12 text-center"
+        >
+          <p className="text-xs text-muted-foreground font-mono">
+            <strong className="text-foreground">Evidence-first engineering:</strong> Skills are connected to actual implementations and contributions—not inflated proficiency ratings.
+          </p>
+        </motion.div>
       </div>
     </section>
   );
