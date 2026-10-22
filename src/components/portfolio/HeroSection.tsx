@@ -56,7 +56,7 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <span className="status-badge mb-8 inline-flex">
-              C++ SYSTEMS ENGINEERING · AI INFERENCE INFRASTRUCTURE · PERFORMANCE OPTIMIZATION
+              SYSTEMS ENGINEERING · AI INFRASTRUCTURE · OPEN SOURCE
             </span>
           </motion.div>
 
@@ -67,7 +67,8 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] mb-6"
           >
-            Engineering Performance-Critical Systems.
+            Building Systems.{" "}
+            <span className="gradient-text">Measuring What Matters.</span>
           </motion.h1>
 
           {/* Subtitle */}
